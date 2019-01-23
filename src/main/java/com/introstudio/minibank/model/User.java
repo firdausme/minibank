@@ -3,10 +3,13 @@ package com.introstudio.minibank.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.UUID;
 
@@ -18,9 +21,11 @@ import java.util.UUID;
 public class User extends AuditModel {
 
     @Id
-    @Column(name = "user_id")
-    @org.hibernate.annotations.Type(type="pg-uuid")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @NotNull
+    @Type(type="pg-uuid")
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(name = "user_id", columnDefinition = "uuid")
     private UUID id;
 
     @NotBlank

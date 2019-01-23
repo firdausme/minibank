@@ -11,9 +11,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/v1/users")
+@RequestMapping("/api/v1/users")
 public class UserController {
 
     private Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -27,37 +28,36 @@ public class UserController {
         return userRepository.findAll(pageable);
     }
 
-    @GetMapping("/{userId}")
-    public User findByUserId(@PathVariable Long userId){
+    @GetMapping("/{id}")
+    public User findByUserId(@PathVariable UUID id){
         logger.info("Call service findByUserId");
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id : " + userId));
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id : "+ id));
     }
-
 
     @PostMapping("")
     public User createUser (@Valid @RequestBody User user){
         return userRepository.save(user);
     }
 
-//    @PutMapping("/{userId}")
-//    public User updateUser (@PathVariable Long userId, @Valid @RequestBody User userReq){
-//        logger.info("Call service updateUser");
-//        return userRepository.findById(userId)
-//                .map(user -> {
-//                    user.setName(userReq.getName());
-//                    return userRepository.save(user);
-//                }).orElseThrow(() -> new ResourceNotFoundException("User not found with id : " + userId));
-//    }
+    @PutMapping("/{id}")
+    public User updateUser (@PathVariable UUID id, @Valid @RequestParam String password){
+        logger.info("Call service updateUser");
+        return userRepository.findById(id)
+                .map(user -> {
+                    user.setPassword(password.trim());
+                    return userRepository.save(user);
+                }).orElseThrow(() -> new ResourceNotFoundException("User not found with id : " + id));
+    }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<?> deleteUser (@PathVariable Long userId){
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUser (@PathVariable UUID id){
         logger.info("Call service deleteUser");
-        return userRepository.findById(userId)
+        return userRepository.findById(id)
                 .map(user -> {
                     userRepository.delete(user);
                     return ResponseEntity.ok().build();
-                }).orElseThrow(() -> new ResourceNotFoundException("User not found with id : " + userId));
+                }).orElseThrow(() -> new ResourceNotFoundException("User not found with id : " + id));
     }
 
 }
