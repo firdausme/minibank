@@ -1,8 +1,6 @@
 package com.introstudio.minibank.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -11,11 +9,15 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "m_user")
 public class User extends AuditModel {
@@ -29,18 +31,24 @@ public class User extends AuditModel {
     private UUID id;
 
     @NotBlank
-    @Email
-    @Size(max = 40)
-    private String email;
-
-
-    @NotBlank
     @Size(min = 3, max = 15)
     private String username;
 
     @NotBlank
-    @Size(min = 8, max = 100)
-    private String Password;
+    @Email
+    @Size(max = 40)
+    private String email;
 
+    @NotBlank
+    @Size(min = 3, max = 50)
+    private String name;
+
+    @NotBlank
+    @Size(min = 8, max = 100)
+    private String password;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "m_user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
 }

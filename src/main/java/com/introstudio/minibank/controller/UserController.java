@@ -17,20 +17,20 @@ import java.util.UUID;
 @RequestMapping("/api/v1/users")
 public class UserController {
 
-    private Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserRepository userRepository;
 
     @GetMapping("")
     public Page<User> getUsers (Pageable pageable){
-        logger.info("Call service getUsers");
+        LOGGER.info("Call service getUsers");
         return userRepository.findAll(pageable);
     }
 
     @GetMapping("/{id}")
     public User findByUserId(@PathVariable UUID id){
-        logger.info("Call service findByUserId");
+        LOGGER.info("Call service findByUserId");
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id : "+ id));
     }
@@ -42,7 +42,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public User updateUser (@PathVariable UUID id, @Valid @RequestParam String password){
-        logger.info("Call service updateUser");
+        LOGGER.info("Call service updateUser");
         return userRepository.findById(id)
                 .map(user -> {
                     user.setPassword(password.trim());
@@ -52,7 +52,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser (@PathVariable UUID id){
-        logger.info("Call service deleteUser");
+        LOGGER.info("Call service deleteUser");
         return userRepository.findById(id)
                 .map(user -> {
                     userRepository.delete(user);
