@@ -2,7 +2,7 @@ package com.introstudio.minibank.controller;
 
 import com.introstudio.minibank.exception.ResourceNotFoundException;
 import com.introstudio.minibank.model.Role;
-import com.introstudio.minibank.model.RoleName;
+import com.introstudio.minibank.constant.RoleName;
 import com.introstudio.minibank.repository.RoleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

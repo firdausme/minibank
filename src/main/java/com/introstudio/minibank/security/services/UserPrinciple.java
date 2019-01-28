@@ -42,7 +42,6 @@ public class UserPrinciple implements UserDetails {
 
         return UserPrinciple.builder()
                 .id(user.getId())
-                .name(user.getName())
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .password(user.getPassword())

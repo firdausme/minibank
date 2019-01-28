@@ -1,4 +1,4 @@
-package com.introstudio.minibank.model;
+package com.introstudio.minibank.constant;
 
 public enum RoleName {
     ROLE_USER,

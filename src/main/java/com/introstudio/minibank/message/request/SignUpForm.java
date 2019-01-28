@@ -1,8 +1,6 @@
 package com.introstudio.minibank.message.request;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -12,11 +10,9 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SignUpForm {
-
-    @NotBlank
-    @Size(min = 3, max = 50)
-    private String name;
 
     @NotBlank
     @Size(min = 3, max = 50)

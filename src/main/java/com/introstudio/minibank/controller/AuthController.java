@@ -4,13 +4,15 @@ import com.introstudio.minibank.exception.ResourceNotFoundException;
 import com.introstudio.minibank.message.response.JwtResponse;
 import com.introstudio.minibank.message.request.LoginForm;
 import com.introstudio.minibank.message.request.SignUpForm;
-import com.introstudio.minibank.model.Constants;
+import com.introstudio.minibank.constant.Constants;
 import com.introstudio.minibank.model.Role;
-import com.introstudio.minibank.model.RoleName;
+import com.introstudio.minibank.constant.RoleName;
 import com.introstudio.minibank.model.User;
 import com.introstudio.minibank.repository.RoleRepository;
 import com.introstudio.minibank.repository.UserRepository;
 import com.introstudio.minibank.security.jwt.JwtProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.TransactionRequiredException;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,6 +33,8 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -48,6 +54,10 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest) {
 
+        if(!userRepository.existsByUsername(loginRequest.getUsername())){
+            return new ResponseEntity<String>("Fail -> Username not found", HttpStatus.NOT_FOUND);
+        }
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(),
@@ -66,6 +76,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
+    @Transactional
     public ResponseEntity<String> registerUser(@Valid @RequestBody SignUpForm signupRequest) {
 
         if (userRepository.existsByUsername(signupRequest.getUsername())) {
@@ -78,7 +89,6 @@ public class AuthController {
 
         // Creating user's account
         User user = User.builder()
-                .name(signupRequest.getName())
                 .username(signupRequest.getUsername())
                 .email(signupRequest.getEmail())
                 .password(passwordEncoder.encode(signupRequest.getPassword()))
@@ -106,7 +116,6 @@ public class AuthController {
 
         user.setRoles(roles);
         userRepository.save(user);
-
 
         return ResponseEntity.ok().body("User Registered succesfully");
 

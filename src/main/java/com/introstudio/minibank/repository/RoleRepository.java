@@ -1,7 +1,7 @@
 package com.introstudio.minibank.repository;
 
 import com.introstudio.minibank.model.Role;
-import com.introstudio.minibank.model.RoleName;
+import com.introstudio.minibank.constant.RoleName;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
